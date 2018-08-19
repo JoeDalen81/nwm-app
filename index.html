@@ -1,0 +1,365 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" media="screen and (orientation: landscape)" href="../css/custom_wide.css">
+        <link rel="stylesheet" media="screen and (orientation: portrait)" href="../css/custom_small.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/css/weather-icons-wind.css">
+        <link rel="stylesheet" href="/css/weather-icons-wind.min.css">
+        <link rel="stylesheet" href="/css/weather-icons.css">
+        <link rel="stylesheet" href="/css/weather-icons.min.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script>
+            var typingTimer;
+            var doneTypingInterval = 1000;
+        </script>
+    </head>
+    <body id='main' onload="on_load()" class='body'>
+        <div class='rcorners1 smalldesc'>
+            <div id="header"><h2>Weather Forecast</h2></div>
+            <input class='form-control' type='text' placeholder="Enter State" id='txtState'>
+            <div class="dropdown" id='city'>
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">County
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu scrollable-menu" id='dropdown' onmouseup="get_weather()">
+                </ul>
+                
+            </div>
+            <div id="main-header-div">
+                <h1 id="main-header"></h1>
+            </div>
+            <div id="expand-container">
+                <div id="expand-contract" class="collapsed">
+                    <div id='left'>
+                        <div id='details'>
+                            <h3 id='current_day'></h3>
+                            <ul id='curr_high_low'></ul>
+                            <ul id='curr_text'></ul>
+                            <i id='curr-icon'></i>
+                        </div>
+                    </div>
+                    <div id='right'>
+                        <h3 class='right-header'>7 Day Forecast:</h3>
+                        <div id="1" class='forecast'>
+                            <i id='icon-1' class=''></i>
+                            <div id='div-ul-1' class="div-ul">
+                                <ul id='date-1'>test date</ul>
+                                <ul id='temp-1'>temp 1</ul>
+                                <ul id='desc-1'>desc</ul>
+                            </div>
+                        </div>
+                        <div id="2" class='forecast'>
+                            <i id='icon-2' class=''></i>
+                            <div id='div-ul-2' class="div-ul">
+                                <ul id='date-2'>test date2</ul>
+                                <ul id='temp-2'>temp 2</ul>
+                                <ul id='desc-2'>desc 2</ul>
+                            </div>
+                        </div>
+                        <div id="3" class='forecast'>
+                            <i id='icon-3' class='wi wi-storm-showers forecast_icon'></i>
+                            <div id='div-ul-3' class="div-ul">
+                                <ul id='date-3'>test date3</ul>
+                                <ul id='temp-3'>temp 3</ul>
+                                <ul id='desc-3'>desc 3</ul>
+                            </div>
+                        </div>
+                        <div id="4" class='forecast'>
+                            <i id='icon-4' class='wi wi-storm-showers forecast_icon'></i>
+                            <div id='div-ul-4' class="div-ul">
+                                <ul id='date-4'>test date4</ul>
+                                <ul id='temp-4'>temp 4</ul>
+                                <ul id='desc-4'>desc 4</ul>
+                            </div>
+                        </div>
+                        <div id="5" class='forecast'>
+                            <i id='icon-5' class='wi wi-storm-showers forecast_icon'></i>
+                            <div id='div-ul-5' class="div-ul">
+                                <ul id='date-5'>test date5</ul>
+                                <ul id='temp-5'>temp 5</ul>
+                                <ul id='desc-5'>desc 5</ul>
+                            </div>
+                        </div>
+                        <div id="6" class='forecast'>
+                            <i id='icon-6' class='wi wi-storm-showers forecast_icon'></i>
+                            <div id='div-ul-6' class="div-ul">
+                                <ul id='date-6'>test date6</ul>
+                                <ul id='temp-6'>temp 6</ul>
+                                <ul id='desc-6'>desc 6</ul>
+                            </div>
+                        </div>
+                        <div id="7" class='forecast'>
+                                <i id='icon-7' class='wi wi-storm-showers forecast_icon'></i>
+                            <div id='div-ul-7' class="div-ul">
+                                <ul id='date-7'>test date7</ul>
+                                <ul id='temp-7'>temp 7</ul>
+                                <ul id='desc-7'>desc 7</ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id='clear'></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        function getcity(){
+            var c = document.getElementById('txtState').value;
+            var menu = document.getElementById('dropdown');
+            var opt;
+
+            document.getElementById("dropdown").innerHTML = "";
+            
+            data = {
+                'command' : "get_city",
+                'city' : c
+            }
+
+            $.ajax({
+                    method: "POST",
+                    data: JSON.stringify(data),
+                    url: 'https://4vsb36rkx1.execute-api.us-east-1.amazonaws.com/prod/'
+                })
+                .then(
+                    function success(data){
+                        for (i = 0; i < data.length; i++){
+                            opt = data[i];
+
+                            var li = document.createElement('li');
+                            var link = document.createElement('a');
+                            var text = document.createTextNode(opt);
+
+                            link.appendChild(text);
+                            li.appendChild(link);
+                            menu.appendChild(li);
+                        }
+                    },
+                    function fail(data){
+                        console.log('error');
+                    }
+                );
+        }
+    </script>
+    <script>
+        function get_weather(){
+            $("#dropdown a").click(function (e) {
+                e.preventDefault();
+                var selText = $(this).text();
+                var state = document.getElementById('txtState').value;
+                const el = document.getElementById("expand-contract");
+                
+                data = {
+                    'command': 'forecast',
+                    'county': selText,
+                    'state': state
+                }
+                
+                $.ajax({
+                    method: "POST",
+                    data: JSON.stringify(data),
+                    url:'https://4vsb36rkx1.execute-api.us-east-1.amazonaws.com/prod/'
+                    // url:'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22' + selText +  '%2C%20' + state + '%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys'
+
+                })
+                .then(
+                    function success(data){
+                        // document.getElementById('details').innerHTML = "";
+
+                        var result = data[0];
+
+                        var tbl = document.getElementById('details');
+                        var parent_div = document.getElementById('right');
+
+                        document.getElementById("main-header").innerText = data[1].replace("Yahoo!", "");
+                        document.getElementById('current_day').innerText = "Current Day - " + result[0].day + " , " + result[0].date + ":";
+                        document.getElementById('curr_high_low').innerText = "High " + result[0].high + "/Low " + result[0].low + "";
+                        document.getElementById('curr_text').innerText = result[0].text;
+                        var i_curr = document.getElementById('curr-icon');
+                        
+                        var desc = result[0].text;
+
+                        if (desc.endsWith('Sunny')){
+                            i_curr.setAttribute("class", "wi wi-day-sunny");
+                        } else if (desc.endsWith('Cloudy')){
+                            i_curr.setAttribute("class", "wi wi-cloudy");
+                        } else if (desc.endsWith('Rain') || desc.endsWith("Rainy") || desc.endsWith("Showers")) {
+                            i_curr.setAttribute('class', 'wi wi-showers');
+                        } else if (desc.endsWith('Thunderstorms') || desc.endsWith('Storms')) {
+                            i_curr.setAttribute('class', 'wi wi-storm-showers');
+                        } else {
+                            i_curr.setAttribute('class', 'wi wi-na');
+                        }
+
+                        // document.getElementById("main-header").innerText = description.replace("Yahoo!", "");
+                        
+                        // document.getElementById('right').innerHTML = '';
+
+                        // var header = document.createElement('h3');
+                        // var header_text = document.createTextNode("7 Day Forecast:");
+                        // header.setAttribute('class', "right-header");
+                        // header.appendChild(header_text);
+                        // document.getElementById('right').appendChild(header);
+                        
+                        for (i = 1; i < 8; i++){
+
+                            document.getElementById('date-' + i).innerText = result[i].day + ", " + result[i].date;
+                            document.getElementById('temp-' + i).innerText = "High " + result[i].high + "/Low " + result[i].low;
+                            document.getElementById('desc-' + i).innerText = result[i].text;
+
+                            var icn = document.getElementById('icon-' + i);
+                            var text = result[i].text;
+
+                            if (text.endsWith('Sunny')){
+                                icn.setAttribute("class", "wi wi-day-sunny forecast_icon");
+                            } else if (text.endsWith('Cloudy')){
+                                icn.setAttribute("class", "wi wi-cloudy forecast_icon");
+                            } else if (text.endsWith('Rain') || text.endsWith("Rainy") || text.endsWith("Showers")) {
+                                icn.setAttribute('class', 'wi wi-showers forecast_icon');
+                            } else if (text.endsWith('Thunderstorms') || text.endsWith('Storms')) {
+                                icn.setAttribute('class', 'wi wi-storm-showers forecast_icon');
+                            } else {
+                                icn.setAttribute('class', 'wi wi-na');
+                            }
+
+                            if (i == 0){
+                                // var ul_current = document.createElement("h3");
+                                // var current_text = document.createTextNode("Current Day - " + forecast[0].day + " , " + forecast[0].date + ":");
+                                // ul_current.appendChild(current_text);
+                                // tbl.appendChild(ul_current);
+
+                                // var ul_currTemp = document.createElement("ul");
+                                // var currTemp_text = document.createTextNode("High " + forecast[0].high + "/Low " + forecast[0].low + "")
+                                // ul_currTemp.appendChild(currTemp_text);
+                                // tbl.appendChild(ul_currTemp);
+
+                                // var ul_currDesc = document.createElement("ul");
+                                // var currDesc_text = document.createTextNode(forecast[0].text);
+                                // ul_currDesc.appendChild(currDesc_text);
+                                // tbl.appendChild(ul_currDesc);
+
+                                // var i_curr = document.createElement("i");
+                               
+                                // i_curr.setAttribute("id", "curr-icon");
+                                // tbl.appendChild(i_curr);
+
+                                // // console.log("Desc: " + currDesc_text.textContent);
+
+                                // if (currDesc_text.textContent.endsWith('Sunny')){
+                                //     i_curr.setAttribute("class", "wi wi-day-sunny");
+                                // } else if (currDesc_text.textContent.endsWith('Cloudy')){
+                                //     i_curr.setAttribute("class", "wi wi-cloudy");
+                                // } else if (currDesc_text.textContent.endsWith('Rain') || currDesc_text.textContent.endsWith("Rainy") || currDesc_text.textContent.endsWith("Showers")) {
+                                //     i_curr.setAttribute('class', 'wi wi-showers');
+                                // } else if (currDesc_text.textContent.endsWith('Thunderstorms') || current_text.textContent.endsWith('Storms')) {
+                                //     i_curr.setAttribute('class', 'wi wi-storm-showers');
+                                // } else {
+                                //     i_curr.setAttribute('class', 'wi wi-na');
+                                // }
+
+                            
+                            }else{
+                                // var t_div = document.createElement("div")
+                                // t_div.setAttribute('id', i);
+                                // t_div.setAttribute('class', "forecast");
+                                // parent_div.appendChild(t_div);
+
+                                // var icon = document.createElement('i');
+                                // icon.setAttribute("id", "icon-" + i );
+                                
+                                // document.getElementById(i).appendChild(icon);
+
+                                // var ul_div = document.createElement('div');
+                                // ul_div.setAttribute('id', 'div-ul-' + i);
+                                // ul_div.setAttribute('class', "div-ul");
+                                // document.getElementById(i).appendChild(ul_div);
+
+                                // var day = document.createElement('ul');
+                                // var day_text = document.createTextNode(forecast[i].day + ", " + forecast[i].date);
+                                // day.setAttribute('id', 'date-' + i);
+                                // day.appendChild(day_text);
+                                // document.getElementById('div-ul-' + i).appendChild(day);
+
+                                // var temp = document.createElement('ul');
+                                // var temp_text = document.createTextNode("High " + forecast[i].high + " /Low " + forecast[i].low + "")
+                                // temp.setAttribute('id', 'temp-' + i);
+                                // temp.appendChild(temp_text);
+                                // document.getElementById('div-ul-' + i).appendChild(temp); 
+
+                                // var desc = document.createElement('ul');
+                                // var desc_text = document.createTextNode(forecast[i].text);
+                                // desc.setAttribute('id', "desc-" + i);
+                                // desc.appendChild(desc_text);
+                                // document.getElementById('div-ul-' + i).appendChild(desc);
+
+                                // if (desc_text.textContent.endsWith('Sunny')) {
+                                //     icon.setAttribute("class", "wi wi-day-sunny forecast_icon");
+                                // } else if (desc_text.textContent.endsWith('Cloudy')) {
+                                //     icon.setAttribute("class", "wi wi-cloudy forecast_icon");
+                                // } else if (desc_text.textContent.endsWith('Rain') || desc_text.textContent.endsWith("Rainy") || desc_text.textContent.endsWith("Showers")) {
+                                //     icon.setAttribute('class', 'wi wi-showers forecast_icon');
+                                // } else if (desc_text.textContent.endsWith('Thunderstorms') || desc_text.textContent.endsWith('Storms')) {
+                                //     icon.setAttribute('class', 'wi wi-storm-showers forecast_icon');
+                                // } else {
+                                //     icon.setAttribute('class', 'wi wi-na forecast_icon');
+                                // }
+                            }
+                        }
+
+                        var att = document.getElementById('expand-contract').getAttribute("class");
+                        if (att =="collapsed"){
+                            el.classList.toggle('expanded');
+                        }
+                    },
+                    function fail(data){
+                        console.log(data);
+                    }
+                );
+            });
+        }
+    </script>
+   <script>
+        function on_load(){
+            data = {
+                'command':"on_load",
+            }
+            $.ajax({
+                    method: "POST",
+                    data: JSON.stringify(data),
+                    url: "https://4vsb36rkx1.execute-api.us-east-1.amazonaws.com/prod/"
+                })
+                .then(
+                    function success(data){
+                        fill(data);
+                    },
+                    function fail(data){
+                        console.log('error');
+                    }
+                );
+        }
+    </script>
+    <script>
+        function fill(states){
+            $( "#txtState" ).autocomplete({
+                source: states
+            });
+        }
+    </script>
+    <script>
+        $('#txtState').keyup(function(){
+            clearTimeout(typingTimer);
+            if ($('#txtState').val()) {
+                typingTimer = setTimeout(doneTyping, doneTypingInterval);
+            }
+        });
+    </script>
+    <script>
+        function doneTyping () {
+            console.log("done typing i see");
+            getcity();
+        }
+    </script>
+</html>
